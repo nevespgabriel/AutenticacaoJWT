@@ -14,7 +14,7 @@ const store = async(req, res) => {
 
 const index = async (req, res) => {
     try{
-        const content = await Post.find(req.query);
+        const content = await Post.find(req.query).exec();
         res.json(content);
     } catch(error){
         res.status(400).send(error);
@@ -23,7 +23,7 @@ const index = async (req, res) => {
 
 const show = async (req,res) => {
     try{
-        const content = await Post.findById(req.params.id);
+        const content = await Post.findById(req.params.id).exec();
         res.json(content);
     } catch(error){
         res.status(400).send(error);
@@ -32,8 +32,15 @@ const show = async (req,res) => {
 
 const update = async (req, res) => {
     try{
-        const post = await Post.findByIdAndUpdate(req.params.id);
-        res.status(200).json(post);
+        const content = await Post.findById(req.params.id).exec();
+        if(content.user.equals(req.user._id)){
+            const post = await Post.findByIdAndUpdate(req.params.id, req.body).exec();
+            res.status(200).json(post);
+        } else{
+            res.status(404).json({
+                error: "Post from another user"
+            })
+        }
     } catch(error){
         res.status(404).send(error);
     }
@@ -41,7 +48,14 @@ const update = async (req, res) => {
 
 const destroy = async(req, res) => {
     try{
-        await Post.findByIdAndDelete(req.params.id);
+        const content = await Post.findById(req.params.id).exec();
+        if(content.user.equals(req.user._id)){
+            await Post.findByIdAndDelete(req.params.id).exec();
+        } else{
+            res.status(404).json({
+                error: "Post from another user"
+            })
+        }
     } catch(error){
         res.status(404).send(error);
     }
