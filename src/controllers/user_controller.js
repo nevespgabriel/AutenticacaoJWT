@@ -21,7 +21,7 @@ const login = async(req, res) => {
         const user = User.findOne({
             email: req.body.email
         }).exec();
-        if(user && await user.isValidPassword(req.body.password)){
+        if(user && await User.isValidPassword(req.body.password)){
             const token = jwtService.generateAccessToken(user);
             res.json(token);
         } else{

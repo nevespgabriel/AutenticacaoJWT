@@ -33,11 +33,12 @@ const show = async (req,res) => {
 const update = async (req, res) => {
     try{
         const user = req.user._id;
+        const { text } = req.body
         const content = await Post.findOneAndUpdate({
             _id: req.params.id,
             user
         },
-        req.body
+        { text }
         ).exec();
         res.json(content);
     } catch(error){
