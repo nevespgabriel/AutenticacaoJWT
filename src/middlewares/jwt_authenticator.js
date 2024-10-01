@@ -1,9 +1,9 @@
-import jwtService from "../services/jwt_service.js";
+import jwt from "../services/jwt_service.js";
 
 const jwtAuthenticator = (req, res, next) => {
     try{
         const token = req.headers.authorization.split(" ")[1];
-        const user = jwtService.verifyAccessToken(token);
+        const user = jwt.verifyAccessToken(token);
         if(user){
             req.user = user;
             next();

@@ -32,15 +32,14 @@ const show = async (req,res) => {
 
 const update = async (req, res) => {
     try{
-        const content = await Post.findById(req.params.id).exec();
-        if(content.user.equals(req.user._id)){
-            const post = await Post.findByIdAndUpdate(req.params.id, req.body).exec();
-            res.status(200).json(post);
-        } else{
-            res.status(404).json({
-                error: "Post from another user"
-            })
-        }
+        const user = req.user._id;
+        const content = await Post.findOneAndUpdate({
+            _id: req.params.id,
+            user
+        },
+        req.body
+        ).exec();
+        res.json(content);
     } catch(error){
         res.status(404).send(error);
     }
@@ -48,14 +47,11 @@ const update = async (req, res) => {
 
 const destroy = async(req, res) => {
     try{
-        const content = await Post.findById(req.params.id).exec();
-        if(content.user.equals(req.user._id)){
-            await Post.findByIdAndDelete(req.params.id).exec();
-        } else{
-            res.status(404).json({
-                error: "Post from another user"
-            })
-        }
+        const user = req.user._id;
+        const content = await Post.findOneAndDelete({
+            _id: req.params.id,
+            user
+        }).exec();
     } catch(error){
         res.status(404).send(error);
     }

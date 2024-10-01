@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema({
     username:{
@@ -8,12 +9,25 @@ const userSchema = new Schema({
     email:{
         type: Schema.Types.String,
         required: true,
-        unique: true
+        unique: true,
+        validate:{
+            validator(v){
+                return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
+            }
+        }
     },
     password:{
         type: Schema.Types.String,
-        required: true
+        required: true,
+        validate:{
+            validator(v){
+                return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
+            }
+        }
     }
+},
+{
+    timestamps: true,
 });
 
 userSchema.pre("save", async function(){
