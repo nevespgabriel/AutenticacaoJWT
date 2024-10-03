@@ -24,7 +24,16 @@ const userSchema = new Schema({
                 return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
             }
         }
-    }
+    },
+    role:{
+        type: Schema.Types.String,
+        enum: ["USER", "ADMINISTRATOR"],
+        default: "USER"
+    },
+    following:{
+        type: [Schema.Types.ObjectId],
+        ref: "User"
+    },
 },
 {
     timestamps: true,

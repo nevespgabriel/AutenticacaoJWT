@@ -14,8 +14,12 @@ const store = async(req, res) => {
 
 const index = async (req, res) => {
     try{
-        const content = await Post.find(req.query).exec();
-        res.json(content);
+        const filter = {
+            user: {
+                $in: req.user.following
+            }
+        }
+        const content = await Post.find(filter).exec();
     } catch(error){
         res.status(400).send(error);
     }
